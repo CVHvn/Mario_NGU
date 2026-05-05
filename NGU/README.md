@@ -104,10 +104,10 @@ NGU uses 32 independent policies corresponding to 32 environments (instead of us
   <table border="0">
     <tr align="center">
       <td>
-        <img src="figure/beta.png" alt="Beta Plot" width="400" height="250"/>
+        <img src="../figure/beta.png" alt="Beta Plot" width="400" height="250"/>
       </td>
       <td>
-        <img src="figure/gamma.png" alt="Gamma Plot" width="400" height="250"/>
+        <img src="../figure/gamma.png" alt="Gamma Plot" width="400" height="250"/>
       </td>
     </tr>
     <tr align="center">
