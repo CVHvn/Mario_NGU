@@ -1,6 +1,48 @@
-# Pseudo-counts hyperparameters
+# Pseudo-counts
 
-## How to find hyperparameters
+## Introduction
+
+This folder contains pseudo-counts code, demo, trained model. 
+
+<p align="center">
+  <img src="demo/gif/1-1.gif" width="200">
+  <img src="demo/gif/1-2.gif" width="200">
+  <img src="demo/gif/1-3.gif" width="200">
+  <img src="demo/gif/1-4.gif" width="200"><br/>
+  <img src="demo/gif/2-1.gif" width="200">
+  <img src="demo/gif/2-2.gif" width="200">
+  <img src="demo/gif/2-3.gif" width="200">
+  <img src="demo/gif/2-4.gif" width="200"><br/>
+  <img src="demo/gif/3-1.gif" width="200">
+  <img src="demo/gif/3-2.gif" width="200">
+  <img src="demo/gif/3-3.gif" width="200">
+  <img src="demo/gif/3-4.gif" width="200"><br/>
+  <img src="demo/gif/4-1.gif" width="200">
+  <img src="demo/gif/4-2.gif" width="200">
+  <img src="demo/gif/4-3.gif" width="200">
+  <img src="demo/gif/4-4.gif" width="200"><br/>
+  <img src="demo/gif/5-1.gif" width="200">
+  <img src="demo/gif/5-2.gif" width="200">
+  <img src="demo/gif/5-3.gif" width="200">
+  <img src="demo/gif/5-4.gif" width="200"><br/>
+  <img src="demo/gif/6-1.gif" width="200">
+  <img src="demo/gif/6-2.gif" width="200">
+  <img src="demo/gif/6-3.gif" width="200">
+  <img src="demo/gif/6-4.gif" width="200"><br/>
+  <img src="demo/gif/7-1.gif" width="200">
+  <img src="demo/gif/7-2.gif" width="200">
+  <img src="demo/gif/7-3.gif" width="200">
+  <img src="demo/gif/7-4.gif" width="200"><br/>
+  <img src="demo/gif/8-1.gif" width="200">
+  <img src="demo/gif/8-2.gif" width="200">
+  <img src="demo/gif/8-3.gif" width="200">
+  <img src="demo/gif/8-4.gif" width="200"><br/>
+  <i>Pseudo_counts Results</i>
+</p>
+
+## Pseudo-counts hyperparameters
+
+### How to find hyperparameters
 
 RL is sensitive with hyperparameters and I have limited resource to test hyperparameters. To find hyperparameters, I list hyperparameters used in NGU paper and combine with PPO-RND hyperparameters I did before:
 - Intrinsic coef: 0.3 (or 0 --> 0.3 for multiple policy) --> because R2D2 != PPO, I can't use it --> I use 0.5 as my old RND and DRND projects.
@@ -11,7 +53,7 @@ I found that NGU gives better intrinsic reward and makes PPO_NGU less sensitive 
 
 After having the default parameters, I played with the stages and adjusted the entropy_coef to 0.05 for the stages that couldn't be completed with the default entropy_coef = 0.01. For stage 8-4, I set num_env = 32.
 
-## Default hyperparameter
+#### Default hyperparameter
 
 Here is the default hyperparameter table, This table applies to all stages; the hyperparameters that change for specific stages will be listed later.
 
@@ -77,3 +119,12 @@ Below is a table of hyperparameters for each specific stage
 | 8     | 2     | 16         | 0.01         | 1546237       | 15:32:07        |
 | 8     | 3     | 16         | 0.01         | 863737        | 8:33:36         |
 | 8     | 4     | `32`       | `0.05`       | 5104952       | 3 days, 4:39:03 |
+
+#### Detail:
+- The hyperparameters for calculating episodic_reward (pseudo-counts reward) are `k = 10, kernel_cluster_distance = 0.008, kernel_epsilon = 0.0001, c = 0.001, and sm = 8`, the same as in the NGU paper.
+- `num_envs = 32`, the same as the NGU paper and previous projects.
+- `update_proportion = 0.1`, like RND. Additionally, NGU uses 5/80 frames (the last 5 frames in the 80-frame sequence) to train RND and embedding the model, so update_proportion = 6.25% (I rounded it to 0.1).
+- `int_adv_coef, int_adv_coef: 0.5 and 1`, like old projects.
+- `gamma, gamma_int: 0.99 and 0.99`, like old projects.
+- `entropy_coef = 0.01`: I found 0.01 performed better than 0.05 with the NGU PPO.
+- `learn_step = 512, batchsize = 256, lambda = 0.95, epoch = 10, lr = 7e-5, target_kl = 0.05, clip_param = 0.2, max_grad_norm = 0.5, norm_adv = false, V_coef = 0.5`, as in previous projects.

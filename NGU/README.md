@@ -1,6 +1,48 @@
-# Pseudo-counts hyperparameters
+# NGU
 
-## How to find hyperparameters
+## Introduction
+
+This folder contains NGU code, demo, trained model. 
+
+<p align="center">
+  <img src="demo/gif/1-1.gif" width="200">
+  <img src="demo/gif/1-2.gif" width="200">
+  <img src="demo/gif/1-3.gif" width="200">
+  <img src="demo/gif/1-4.gif" width="200"><br/>
+  <img src="demo/gif/2-1.gif" width="200">
+  <img src="demo/gif/2-2.gif" width="200">
+  <img src="demo/gif/2-3.gif" width="200">
+  <img src="demo/gif/2-4.gif" width="200"><br/>
+  <img src="demo/gif/3-1.gif" width="200">
+  <img src="demo/gif/3-2.gif" width="200">
+  <img src="demo/gif/3-3.gif" width="200">
+  <img src="demo/gif/3-4.gif" width="200"><br/>
+  <img src="demo/gif/4-1.gif" width="200">
+  <img src="demo/gif/4-2.gif" width="200">
+  <img src="demo/gif/4-3.gif" width="200">
+  <img src="demo/gif/4-4.gif" width="200"><br/>
+  <img src="demo/gif/5-1.gif" width="200">
+  <img src="demo/gif/5-2.gif" width="200">
+  <img src="demo/gif/5-3.gif" width="200">
+  <img src="demo/gif/5-4.gif" width="200"><br/>
+  <img src="demo/gif/6-1.gif" width="200">
+  <img src="demo/gif/6-2.gif" width="200">
+  <img src="demo/gif/6-3.gif" width="200">
+  <img src="demo/gif/6-4.gif" width="200"><br/>
+  <img src="demo/gif/7-1.gif" width="200">
+  <img src="demo/gif/7-2.gif" width="200">
+  <img src="demo/gif/7-3.gif" width="200">
+  <img src="demo/gif/7-4.gif" width="200"><br/>
+  <img src="demo/gif/8-1.gif" width="200">
+  <img src="demo/gif/8-2.gif" width="200">
+  <img src="demo/gif/8-3.gif" width="200">
+  <img src="demo/gif/8-4.gif" width="200"><br/>
+  <i>NGU Results</i>
+</p>
+
+## NGU hyperparameters
+
+### How to find hyperparameters
 
 First I try a similar policy to pseudo-counts, I use the same hyperparameter set and complete stage 8-4. For rnd, I normalize same as paper:
 - normalize rnd = 1 + (rnd - rms_mean) / rms_std
@@ -15,39 +57,7 @@ I copy the betas, gammas settings from paper.
 
 This NGU can complete all stages in the first run without hyperparameter tuning. I ran stages 8-4 one more time, the second time I got ~340-350/380-390 rewards (almost completed) and I stopped after 6e6 steps because it took too long (I think this run would have completed with extra running if I wasn't too unlucky).
 
-## Hyperparameters 1 policy stage 8-4
-
-Below is a detailed hyperparameter table:
-
-| Hyperparameters | Value |
-| :--- | :--- |
-| **num_envs** | 32 |
-| **learn_step** | 512 |
-| **batchsize** | 256 |
-| **epoch** | 10 |
-| **lambda** | 0.95 |
-| **gamma** | 0.99 |
-| **gamma_int** | 0.99 |
-| **learning_rate** | 7e-5 |
-| **target_kl** | 0.05 |
-| **clip_param** | 0.2 |
-| **max_grad_norm** | 0.5 |
-| **update_proportion** | 0.1 |
-| **norm_adv** | FALSE |
-| **int_adv_coef** | 0.5 |
-| **ext_adv_coef** | 1 |
-| **V_coef** | 0.5 |
-| **entropy_coef** | 0.01 |
-| **loss_type** | huber |
-| **k** | 10 |
-| **kernel_cluster_distance** | 0.008 |
-| **kernel_epsilon** | 0.0001|
-| **c** | 0.001 |
-| **sm** | 8 |
-| **training_step** | 1196031 | 
-| **training_time** | 1 day, 16:17:58 |
-
-## Hyperparameters for all stages
+### Hyperparameters for all stages
 
 Below is a detailed hyperparameter table for full NGU. This will work for all stages.
 
@@ -77,7 +87,7 @@ Below is a detailed hyperparameter table for full NGU. This will work for all st
 | **c** | 0.001 |
 | **sm** | 8 |
 
-### How to find hyperparameters:
+#### Detail:
 - The hyperparameters for calculating episodic_reward (pseudo-counts reward) are `k = 10, kernel_cluster_distance = 0.008, kernel_epsilon = 0.0001, c = 0.001, and sm = 8`, the same as in the NGU paper.
 - `num_envs = 32`, the same as the NGU paper and previous projects.
 - `update_proportion = 0.1`, like RND. Additionally, NGU uses 5/80 frames (the last 5 frames in the 80-frame sequence) to train RND and embedding the model, so update_proportion = 6.25% (I rounded it to 0.1).
@@ -86,7 +96,7 @@ Below is a detailed hyperparameter table for full NGU. This will work for all st
 - `entropy_coef = 0.01`: I found 0.01 performed better than 0.05 with the NGU PPO.
 - `learn_step = 512, batchsize = 256, lambda = 0.95, epoch = 10, lr = 7e-5, target_kl = 0.05, clip_param = 0.2, max_grad_norm = 0.5, norm_adv = false, V_coef = 0.5`, as in previous projects.
 
-### Policies, gamma and beta
+#### Policies, gamma and beta
 
 NGU uses 32 independent policies corresponding to 32 environments (instead of using a shared policy like other algorithms). Note: data for a specific policy (collected from its corresponding environment) is only used to train that policy (the NGU paper tried to train using shared data, but it didn't perform as well). Each policy in NGU receives additional gamma and beta parameters as input to the model to predict actions. Below are the gamma and beta graphs for policies 1-32 (similar to the NGU paper):
 
@@ -115,7 +125,7 @@ From 0-31, the higher the env, the more policies prioritize exploration (because
 
 Similar to NGU, I only used policy 0 to test the results. Note: different models will produce different behavioral sequences; you can experiment further yourself.
 
-### Reference time and step count table
+#### Reference time and step count table
 
 Note: rerunning or using different seeds will yield different results
 
