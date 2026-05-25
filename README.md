@@ -119,7 +119,7 @@ I only needed one set of hyperparameters to complete all 32/32 stages. This show
 
 ### How to find hyperparameters:
 - The hyperparameters for calculating episodic_reward (pseudo-counts reward) are `k = 10, kernel_cluster_distance = 0.008, kernel_epsilon = 0.0001, c = 0.001, and sm = 8`, the same as in the NGU paper.
-- `num_envs = 32`, the same as the NGU paper and previous projects.
+- `num_envs = 32`, the same as previous projects (note that NGU use 32 policies and 256 envs (256/32=8 env per policy), I only use 1 env for each policy. I can't use 256 envs because this pricing will out of my budget).
 - `update_proportion = 0.1`, like RND. Additionally, NGU uses 5/80 frames (the last 5 frames in the 80-frame sequence) to train RND and embedding the model, so update_proportion = 6.25% (I rounded it to 0.1).
 - `beta_min, beta_max: 0 and 1`, the same as the NGU paper. `beta` also corresponds to `int_adv_coef` in other projects (I use beta to match the NGU paper). `ext_adv_coef` is fixed to 1.
 - `gamma_min, gamma_max: 0.99 and 0.997`, like the NGU paper.
@@ -128,7 +128,7 @@ I only needed one set of hyperparameters to complete all 32/32 stages. This show
 
 ### Policies, gamma and beta
 
-NGU uses 32 independent policies corresponding to 32 environments (instead of using a shared policy like other algorithms). Note: data for a specific policy (collected from its corresponding environment) is only used to train that policy (the NGU paper tried to train using shared data, but it didn't perform as well). Each policy in NGU receives additional gamma and beta parameters as input to the model to predict actions. Below are the gamma and beta graphs for policies 1-32 (similar to the NGU paper):
+NGU uses 32 independent policies corresponding to 256 environments (instead of using 1 policy like other algorithms). Note: data for a specific policy (collected from its corresponding environment) is only used to train that policy (the NGU paper tried to train using shared data, but it didn't perform as well). Each policy in NGU receives additional gamma and beta parameters as input to the model to predict actions. Below are the gamma and beta graphs for policies 1-32 (similar to the NGU paper):
 
 <div align="center">
   <table border="0">
@@ -171,6 +171,11 @@ Similar to NGU, I only used policy 0 to test the results. Note: different models
   - You can tuning hyperparameters.
   - You can apply new network architectures (like attention, Resnet), maybe it work?
   - Try to improve R2D2 implement (especially when there are multiple machines or servers because R2D2 is designed to run in parallel on multiple servers instead of 1 machine like the way I implemented PPO).
+ 
+* Num environments, num policies?
+
+  - NGU separates num policies (N=32) and num envs (256). This means 8 envs for 1 policy. They also distribute training across many different computers, so it's very fast. I can't set num envs = 256 because it's too slow and exceeds the budget.
+  - The original NGU uses R2D2. From what I understand, setting num actors to 256 prevents the model from overfitting in the replay buffer (actors push data in very quickly). This might not seriously affect PPO because it's online learning (although 256 might actually perform better than 32?).
 
 ## Discussion
 
