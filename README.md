@@ -63,9 +63,9 @@ Intrinsic reward of NGU include two terms:
 
 ## Motivation
 
-Original NGU implement base on R2D2 but I can't find True NGU or even R2D2 available opensource. Almost project just simpler version of NGU or R2D2. They don't use different epsilon values in epsilon greedy, different gamma and different beta for each actor like NGU paper. Some project maybe implement incorrect or suboptimal make performance of NGU very poor when compare with other intrinsic reward method can easy implement (easy than no bug!) or have reputable opensource.
+Original NGU implement base on R2D2 but I can't find True NGU or even R2D2 available opensource. Almost project just simpler version of NGU or R2D2 (For R2D2, it's not possible to reproduce the Atari results yet. Maybe 256 actors exceeds their budget; keeping the number of actors low will limit R2D2 and NGU). They don't use different epsilon values in epsilon greedy, different gamma and different beta for each actor like NGU paper. Some project maybe implement incorrect or suboptimal make performance of NGU very poor when compare with other intrinsic reward method can easy implement (easy than no bug!) or have reputable opensource.
 
-I read this paper and want to reimplement this to find stronger intrinsic reward can make PPO learn better.
+I read this paper and want to reimplement this to find stronger intrinsic reward can make PPO learn better. Also, I think we need to further evaluate the effectiveness of NGU intrinsic reward in comparison with other algorithms like PPO (original NGU = NGU intrinsic reward + R2D2).
 
 I use Super Mario Bros to test NGU because I can compare NGU with many other algorithms I implemented before. And I still find algorithm that can solve all stages of SMB without finetune hyperparameters. With 1 set of hyperparameters, I will train all stages of SMB with 1 policy (if we need finetune hyperparameters to complete some stages, we can't complete all stages with 1 policy!).
 
